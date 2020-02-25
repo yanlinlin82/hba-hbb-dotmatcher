@@ -30,13 +30,21 @@ a <- expand.grid(a = seq_along(hba_win),
          hbb = hbb_win[b],
          score = calc_score(hba, hbb))
 
-g <- a %>%
+a2 <- lapply(window_size:1, function(d) {
+               a %>%
+                 filter(score >= threshold) %>%
+                 mutate(a = a + d - 1,
+                        b = b + d - 1,
+                        d = d - 1)
+        }) %>% do.call("rbind", .) %>% as_tibble
+
+g <- a2 %>%
   ggplot() +
   geom_abline(color = "blue", size = .5, alpha = .5) +
-  geom_rect(aes(xmin = a - 1, xmax = a, ymin = b - 1, ymax = b, fill = (score >= threshold))) +
-  scale_x_continuous(limits = c(0,length(hba_win)), breaks = seq(from = 0, to = length(hba_win), by = 10)) +
-  scale_y_continuous(limits = c(0,length(hbb_win)), breaks = seq(from = 0, to = length(hbb_win), by = 10)) +
-  scale_fill_manual(values = c(NA, "black")) +
+  geom_rect(aes(xmin = a - 1, xmax = a, ymin = b - 1, ymax = b, fill = (d > 0))) +
+  scale_x_continuous(limits = c(0,nchar(hba)), breaks = seq(from = 0, to = nchar(hba), by = 10)) +
+  scale_y_continuous(limits = c(0,nchar(hbb)), breaks = seq(from = 0, to = nchar(hbb), by = 10)) +
+  scale_fill_manual(values = c("red", "black")) +
   labs(x = "HBA", y = "HBB") +
   guides(fill = FALSE) +
   theme_bw() +
@@ -44,13 +52,13 @@ g <- a %>%
         text = element_text(size = 30))
 g %>% ggsave(filename = "HBA-vs-HBB.png", width = 15, height = 15)
 
-g <- a %>%
+g <- a2 %>%
   ggplot() +
   geom_abline(color = "blue", size = .5, alpha = .5) +
-  geom_rect(aes(xmin = b - 1, xmax = b, ymin = a - 1, ymax = a, fill = (score >= threshold))) +
-  scale_x_continuous(limits = c(0,length(hbb_win)), breaks = (0:15)*10) +
-  scale_y_continuous(limits = c(0,length(hba_win)), breaks = (0:15)*10) +
-  scale_fill_manual(values = c(NA, "black")) +
+  geom_rect(aes(xmin = b - 1, xmax = b, ymin = a - 1, ymax = a, fill = (d > 0))) +
+  scale_x_continuous(limits = c(0,nchar(hbb)), breaks = seq(from = 0, to = nchar(hbb), by = 10)) +
+  scale_y_continuous(limits = c(0,nchar(hba)), breaks = seq(from = 0, to = nchar(hba), by = 10)) +
+  scale_fill_manual(values = c("red", "black")) +
   labs(x = "HBB", y = "HBA") +
   guides(fill = FALSE) +
   theme_bw() +
