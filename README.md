@@ -1,5 +1,10 @@
 # Dotmatch between HBA and HBB
 
+## Reference
+
+* EBI EMBOSS dotmatcher: <http://embossgui.sourceforge.net/demo/manual/dotmatcher.html>
+* Online dotmatcher: <https://www.ebi.ac.uk/Tools/seqstats/emboss_dotmatcher/>
+
 ## Data
 
 * `BLOSUM62` is downloaded from: <ftp://ftp.ncbi.nlm.nih.gov/blast/matrices/BLOSUM62>
